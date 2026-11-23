@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import {
   SafeAreaView,
@@ -5,17 +6,20 @@ import {
   View,
   Text,
   Pressable,
-  StatusBar,
   StyleSheet,
+  StatusBar,
+  Linking,
 } from "react-native";
 
 const BLUE = "#0A4DA1";
+const LIGHT = "#F2F6FC";
 
 const sections = [
   { id: "books", title: "المكتبة الإسلامية", icon: "📚" },
   { id: "audio", title: "المحاضرات الصوتية", icon: "🎧" },
   { id: "tv", title: "قناة TILAWA TV ZARMA", icon: "📺" },
   { id: "prayer", title: "مواقيت الصلاة", icon: "🕌" },
+  { id: "settings", title: "الإعدادات", icon: "⚙️" },
 ];
 
 const books = [
@@ -25,288 +29,218 @@ const books = [
 ];
 
 const audios = [
-  "الدورة العلمية في كوتونو – التسجيل الأول",
-  "الدورة العلمية في كوتونو – التسجيل الثاني",
-  "أشراط الساعة – تقديم أبي يحيى أسكندر يحيى ميغا",
-  "قصة صافي بن صياد – تقديم أسكندر يحيى ميغا",
+  "الدورة العلمية في كوتونو - التسجيل الأول",
+  "الدورة العلمية في كوتونو - التسجيل الثاني",
+  "أشراط الساعة - تقديم أبي يحيى أسكندر يحيى ميغا",
+  "قصة صافي بن صياد - تقديم أسكندر يحيى ميغا",
 ];
 
 export default function App() {
   const [page, setPage] = useState("home");
+  const [dark, setDark] = useState(false);
 
-  const getTitle = () => {
-    const section = sections.find((item) => item.id === page);
-    return section ? section.title : "الرئيسية";
-  };
+  const bg = dark ? "#101827" : LIGHT;
+  const card = dark ? "#1E293B" : "#FFFFFF";
+  const color = dark ? "#FFFFFF" : "#17365D";
 
-  const renderList = (items) => (
-    <View>
-      {items.map((item, index) => (
-        <View style={styles.listItem} key={index}>
-          <Text style={styles.itemNumber}>{index + 1}</Text>
-          <Text style={styles.itemText}>{item}</Text>
-        </View>
-      ))}
-    </View>
-  );
+  const title =
+    sections.find((item) => item.id === page)?.title || "الرئيسية";
 
-  const renderContent = () => {
-    if (page === "books") return renderList(books);
-    if (page === "audio") return renderList(audios);
-
-    if (page === "tv") {
-      return (
-        <View style={styles.infoCard}>
-          <Text style={styles.infoTitle}>TILAWA TV ZARMA</Text>
-          <Text style={styles.infoText}>
-            القناة الرسمية للدروس والمحاضرات باللغة الزرما.
-          </Text>
-          <Text style={styles.infoText}>
-            سيتم ربط مشغل الفيديو الداخلي بالقناة في المرحلة القادمة.
-          </Text>
-        </View>
-      );
-    }
-
-    if (page === "prayer") {
-      return (
-        <View style={styles.infoCard}>
-          <Text style={styles.infoTitle}>مواقيت الصلاة</Text>
-          <Text style={styles.infoText}>
-            سيتم إضافة مواقيت الصلاة حسب المدينة، مع التنبيهات، في المرحلة القادمة.
-          </Text>
-        </View>
-      );
-    }
-
-    return (
-      <>
-        <View style={styles.welcome}>
-          <Text style={styles.welcomeTitle}>
-            مرحبًا بك في التطبيق الإسلامي
-          </Text>
-          <Text style={styles.welcomeText}>
-            مكتبة علمية ومحاضرات نافعة في مكان واحد
-          </Text>
-        </View>
-
-        {sections.map((item) => (
-          <Pressable
-            key={item.id}
-            style={({ pressed }) => [
-              styles.sectionCard,
-              pressed && styles.pressed,
-            ]}
-            onPress={() => setPage(item.id)}
-          >
-            <Text style={styles.sectionIcon}>{item.icon}</Text>
-            <Text style={styles.sectionTitle}>{item.title}</Text>
-            <Text style={styles.arrow}>‹</Text>
-          </Pressable>
-        ))}
-      </>
-    );
-  };
+  const renderList = (items) =>
+    items.map((item, index) => (
+      <View key={index} style={[styles.item, { backgroundColor: card }]}>
+        <Text style={styles.number}>{index + 1}</Text>
+        <Text style={[styles.itemText, { color }]}>{item}</Text>
+      </View>
+    ));
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
       <StatusBar backgroundColor={BLUE} barStyle="light-content" />
 
       <View style={styles.header}>
-        <Text style={styles.appTitle}>
-          الدعوة السلفية حقيقتها ومميزاتها
-        </Text>
-        <Text style={styles.author}>
-          تأليف: أسكندر يحيى ميغا آل سعد
-        </Text>
+        <Text style={styles.logo}>TILAWA TV ZARMA</Text>
+        <Text style={styles.subtitle}>منصة العلم والدعوة</Text>
       </View>
 
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={styles.content}
-      >
-        {page !== "home" && (
-          <Pressable
-            style={styles.backButton}
-            onPress={() => setPage("home")}
-          >
-            <Text style={styles.backText}>→ الرئيسية</Text>
-          </Pressable>
+      {page !== "home" && (
+        <Pressable style={styles.back} onPress={() => setPage("home")}>
+          <Text style={styles.backText}>‹  الرئيسية</Text>
+        </Pressable>
+      )}
+
+      <ScrollView contentContainerStyle={styles.content}>
+        {page === "home" ? (
+          <>
+            <View style={[styles.welcome, { backgroundColor: card }]}>
+              <Text style={[styles.welcomeTitle, { color }]}>
+                مرحباً بكم في
+              </Text>
+              <Text style={styles.brand}>TILAWA TV ZARMA</Text>
+              <Text style={[styles.description, { color }]}>
+                مكتبة إسلامية للدروس والمحاضرات والكتب النافعة
+              </Text>
+            </View>
+
+            {sections.map((item) => (
+              <Pressable
+                key={item.id}
+                style={[styles.section, { backgroundColor: card }]}
+                onPress={() => setPage(item.id)}
+              >
+                <Text style={styles.icon}>{item.icon}</Text>
+                <Text style={[styles.sectionText, { color }]}>
+                  {item.title}
+                </Text>
+                <Text style={styles.arrow}>‹</Text>
+              </Pressable>
+            ))}
+          </>
+        ) : (
+          <>
+            <Text style={[styles.pageTitle, { color }]}>{title}</Text>
+
+            {page === "books" && renderList(books)}
+
+            {page === "audio" && (
+              <>
+                {renderList(audios)}
+                <Text style={[styles.note, { color }]}>
+                  سيتم ربط الملفات الصوتية وتشغيلها داخل التطبيق في المرحلة القادمة.
+                </Text>
+              </>
+            )}
+
+            {page === "tv" && (
+              <View style={[styles.info, { backgroundColor: card }]}>
+                <Text style={styles.tvIcon}>📺</Text>
+                <Text style={[styles.infoTitle, { color }]}>
+                  TILAWA TV ZARMA
+                </Text>
+                <Text style={[styles.description, { color }]}>
+                  تابع الدروس والمحاضرات المنشورة على قناتنا.
+                </Text>
+                <Pressable
+                  style={styles.button}
+                  onPress={() =>
+                    Linking.openURL("https://youtube.com/@tilawatvzarma")
+                  }
+                >
+                  <Text style={styles.buttonText}>زيارة القناة</Text>
+                </Pressable>
+              </View>
+            )}
+
+            {page === "prayer" && (
+              <View style={[styles.info, { backgroundColor: card }]}>
+                <Text style={styles.tvIcon}>🕌</Text>
+                <Text style={[styles.infoTitle, { color }]}>
+                  مواقيت الصلاة
+                </Text>
+                <Text style={[styles.description, { color }]}>
+                  سيتم إعداد مواقيت الصلاة حسب المدينة في المرحلة القادمة.
+                </Text>
+              </View>
+            )}
+
+            {page === "settings" && (
+              <Pressable
+                style={[styles.item, { backgroundColor: card }]}
+                onPress={() => setDark(!dark)}
+              >
+                <Text style={[styles.itemText, { color }]}>
+                  {dark ? "☀️ تفعيل الوضع النهاري" : "🌙 تفعيل الوضع الليلي"}
+                </Text>
+              </Pressable>
+            )}
+          </>
         )}
-
-        <Text style={styles.pageTitle}>
-          {page === "home" ? "الأقسام الرئيسية" : getTitle()}
-        </Text>
-
-        {renderContent()}
       </ScrollView>
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>
-          تطبيق الدعوة السلفية
-        </Text>
+        <Text style={styles.footerText}>TILAWA TV ZARMA</Text>
       </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#F3F7FC",
-  },
+  container: { flex: 1 },
   header: {
     backgroundColor: BLUE,
-    paddingVertical: 25,
-    paddingHorizontal: 16,
+    padding: 24,
     alignItems: "center",
   },
-  appTitle: {
+  logo: {
     color: "#FFFFFF",
+    fontSize: 23,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  subtitle: { color: "#DCE9F8", marginTop: 8, fontSize: 14 },
+  content: { padding: 16, paddingBottom: 30 },
+  welcome: {
+    padding: 22,
+    borderRadius: 16,
+    marginBottom: 18,
+    alignItems: "center",
+  },
+  welcomeTitle: { fontSize: 19, fontWeight: "bold" },
+  brand: {
+    color: BLUE,
+    fontSize: 22,
+    fontWeight: "bold",
+    marginVertical: 12,
+  },
+  description: {
+    fontSize: 15,
+    textAlign: "center",
+    lineHeight: 25,
+  },
+  section: {
+    padding: 18,
+    borderRadius: 13,
+    marginBottom: 12,
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    elevation: 2,
+  },
+  icon: { fontSize: 25, marginLeft: 14 },
+  sectionText: { flex: 1, fontSize: 16, fontWeight: "bold", textAlign: "right" },
+  arrow: { fontSize: 25, color: BLUE },
+  back: { padding: 14, alignItems: "flex-end" },
+  backText: { color: BLUE, fontSize: 16, fontWeight: "bold" },
+  pageTitle: {
     fontSize: 21,
     fontWeight: "bold",
-    textAlign: "center",
-    writingDirection: "rtl",
-  },
-  author: {
-    color: "#E5EEFA",
-    fontSize: 14,
-    marginTop: 10,
-    textAlign: "center",
-    writingDirection: "rtl",
-  },
-  scroll: {
-    flex: 1,
-  },
-  content: {
-    padding: 16,
-    paddingBottom: 30,
-  },
-  pageTitle: {
-    fontSize: 20,
-    color: BLUE,
-    fontWeight: "bold",
     textAlign: "right",
-    marginBottom: 16,
-    writingDirection: "rtl",
-  },
-  welcome: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 14,
-    padding: 20,
     marginBottom: 18,
-    borderRightWidth: 5,
-    borderRightColor: BLUE,
   },
-  welcomeTitle: {
-    color: BLUE,
-    fontSize: 18,
-    fontWeight: "bold",
-    textAlign: "right",
-    writingDirection: "rtl",
-  },
-  welcomeText: {
-    color: "#526174",
-    fontSize: 14,
-    marginTop: 8,
-    textAlign: "right",
-    writingDirection: "rtl",
-  },
-  sectionCard: {
-    backgroundColor: "#FFFFFF",
+  item: {
+    padding: 17,
     borderRadius: 12,
-    padding: 18,
     marginBottom: 12,
     flexDirection: "row-reverse",
     alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#E1EAF5",
   },
-  sectionIcon: {
-    fontSize: 27,
-    marginLeft: 14,
+  number: { color: BLUE, fontWeight: "bold", fontSize: 17, marginLeft: 12 },
+  itemText: { flex: 1, fontSize: 15, textAlign: "right", lineHeight: 25 },
+  info: { padding: 22, borderRadius: 15, alignItems: "center" },
+  tvIcon: { fontSize: 42, marginBottom: 12 },
+  infoTitle: { fontSize: 21, fontWeight: "bold", marginBottom: 12 },
+  button: {
+    backgroundColor: BLUE,
+    paddingVertical: 13,
+    paddingHorizontal: 28,
+    borderRadius: 10,
+    marginTop: 20,
   },
-  sectionTitle: {
-    flex: 1,
-    color: "#183B65",
-    fontSize: 16,
-    fontWeight: "bold",
-    textAlign: "right",
-    writingDirection: "rtl",
-  },
-  arrow: {
-    color: BLUE,
-    fontSize: 25,
-    marginLeft: 8,
-  },
-  pressed: {
-    opacity: 0.7,
-  },
-  backButton: {
-    alignSelf: "flex-end",
-    backgroundColor: "#DCE9F8",
-    paddingVertical: 9,
-    paddingHorizontal: 15,
-    borderRadius: 9,
-    marginBottom: 18,
-  },
-  backText: {
-    color: BLUE,
-    fontWeight: "bold",
-    fontSize: 14,
-  },
-  listItem: {
-    backgroundColor: "#FFFFFF",
-    padding: 16,
-    borderRadius: 11,
-    marginBottom: 10,
-    flexDirection: "row-reverse",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#E1EAF5",
-  },
-  itemNumber: {
-    color: BLUE,
-    fontSize: 16,
-    fontWeight: "bold",
-    marginLeft: 12,
-  },
-  itemText: {
-    flex: 1,
-    color: "#183B65",
-    fontSize: 15,
-    textAlign: "right",
-    writingDirection: "rtl",
-  },
-  infoCard: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 13,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: "#E1EAF5",
-  },
-  infoTitle: {
-    fontSize: 19,
-    color: BLUE,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 12,
-  },
-  infoText: {
-    fontSize: 15,
-    color: "#526174",
-    textAlign: "right",
-    lineHeight: 27,
-    writingDirection: "rtl",
-    marginBottom: 8,
-  },
+  buttonText: { color: "#FFFFFF", fontWeight: "bold", fontSize: 16 },
+  note: { textAlign: "right", marginTop: 12, lineHeight: 25 },
   footer: {
     backgroundColor: BLUE,
-    padding: 13,
+    padding: 12,
     alignItems: "center",
   },
-  footerText: {
-    color: "#FFFFFF",
-    fontSize: 13,
-  },
+  footerText: { color: "#FFFFFF", fontWeight: "bold" },
 });
