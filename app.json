@@ -1,0 +1,19 @@
+
+{
+  "expo": {
+    "name": "الدعوة السلفية حقيقتها ومميزاتها",
+    "slug": "al-dawah-al-salafiyah",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "description": "تطبيق إسلامي يضم الكتب والمحاضرات الصوتية والدروس العلمية.",
+    "platforms": [
+      "android"
+    ],
+    "android": {
+      "package": "com.aldawah.alsalafiyah",
+      "versionCode": 1,
+      "backgroundColor": "#F3F7FC"
+    }
+  }
+}
