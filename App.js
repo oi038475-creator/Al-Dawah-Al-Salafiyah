@@ -11,6 +11,7 @@ import {
   Linking,
 } from "react-native";
 
+import { WebView } from "react-native-webview";
 const BLUE = "#0A4DA1";
 const LIGHT = "#F2F6FC";
 
