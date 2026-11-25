@@ -8,11 +8,11 @@
     "start": "expo start",
     "android": "expo start --android",
     "web": "expo start --web"
-},
-  "dependencies": {  
-    "react-native-webview": "14.0.1"
+  },
+  "dependencies": {
     "expo": "~58.0.26",
     "react": "19.3.0",
-    "react-native": "0.88.1"
+    "react-native": "0.88.1",
+    "react-native-webview": "14.0.1"
   }
 }
