@@ -113,7 +113,7 @@ export default function App() {
             )}
 {page === "tv" && (
   <View style={[styles.infoCard, { backgroundColor: card }]}>
-    <Text style={styles.tvIcon}>📺</Text>
+    <Text style={[styles.tvIcon]}>📺</Text>
 
     <Text style={[styles.infoTitle, { color }]}>
       TILAWA TV ZARMA
@@ -122,21 +122,13 @@ export default function App() {
     <Text style={[styles.description, { color }]}>
       القناة الرسمية للدروس والمحاضرات العلمية
     </Text>
-    <Text style={[styles.description, { color }]}>
-      استمع إلى الدروس والمواعظ باللغة الزرما،
-      وتابع جديد المحاضرات العلمية.
-    </Text>
 
-    <Pressable
-      style={styles.button}
-      onPress={() =>
-        Linking.openURL("https://www.youtube.com/@tilawatvzarma")
-      }
-    >
-      <Text style={styles.buttonText}>
-        مشاهدة قناة TILAWA TV ZARMA
-      </Text>
-    </Pressable>
+    <View style={{ height: 450, width: "100%", marginTop: 15 }}>
+      <WebView
+        source={{ uri: "https://www.youtube.com/@tilawatvzarma" }}
+        style={{ flex: 1 }}
+      />
+    </View>
   </View>
 )}
             {page === "prayer" && (
